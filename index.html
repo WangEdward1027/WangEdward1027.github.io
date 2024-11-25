@@ -1,116 +1,381 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XXXX</title>
+    <title>指针骑士搜索引擎</title>
+    <link rel="icon" type="image/jpeg" href="icon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Pacifico&display=swap" rel="stylesheet">
     <style>
-        /* Reset some default browser styles */
-        * {
+        body {
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Light blue background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
             color: #333;
+            position: relative;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background1.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.5;
+            z-index: -1;
         }
-        header {
-            background-color: #fff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+div {
+    display: flex; /* 水平排列 */
+    align-items: center; /* 垂直居中 */
+    gap: 10px; /* 图片和按钮之间的间距 */
+}
+
+
+        nav {
+            background-color: #ff99cc;
+            width: 100%;
+            padding: 10px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 5px;
         }
+
         nav ul {
-            list-style-type: none;
+            list-style: none;
+            margin: 0;
+            padding: 0;
             display: flex;
         }
+
         nav ul li {
-            margin-left: 20px;
+            position: relative;
+            margin-right: 20px;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
         }
-        nav ul li a {
+
+        nav ul li:hover {
+            background-color: #155cbc;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        nav ul li ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            color: black;
+            padding: 0;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul li:hover ul {
+            display: block;
+        }
+
+        nav ul li ul li {
+            margin: 0;
+            padding: 10px;
+            width: 200px;
+            white-space: nowrap;
+        }
+
+        nav ul li ul li a {
+            color: #333;
             text-decoration: none;
-            color: #007bff; /* Blue links */
-            transition: all 0.3s ease;
+            transition: color 0.2s ease;
         }
-        nav ul li a:hover {
-            transform: scale(1.1); /* Button hover effect */
+
+        nav ul li ul li a:hover {
+            color: #1a73e8;
         }
-        .hero {
-            background-color: #fff;
-            padding: 50px;
-            margin-top: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        #musicButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        .hero img {
-            width: 100%;
-            height: auto;
-            max-width: 500px;
-            margin-bottom: 20px;
+
+        #musicButton:hover {
+            background-color: #155cbc;
         }
-        .exhibitions {
-            background-color: #fff;
-            padding: 50px;
-            margin-top: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        #extraButtons {
+            display: flex;
+            gap: 10px;
         }
-        .footer {
-            background-color: #fff;
-            padding: 20px;
-            margin-top: 20px;
+
+        .extra-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .extra-button.yellow {
+            background-color: #ffcc00;
+        }
+
+        .extra-button.yellow:hover {
+            background-color: #e6b800;
+        }
+
+        .extra-button.black {
+            background-color: #000;
+        }
+
+        .extra-button.black:hover {
+            background-color: #333;
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin: 50px 0 20px;
             text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Pacifico', cursive;
+            animation: colorFlash 1s infinite;
         }
-        .footer p {
-            margin: 5px 0;
+	
+.image-link {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px; /* 添加圆角效果 */
+    margin-right: 10px; /* 与音乐按钮的间距 */
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.image-link:hover {
+    transform: scale(1.1); /* 鼠标悬停放大效果 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+        @keyframes colorFlash {
+            0% { color: #ff4c4c; }
+            20% { color: #ffcc00; }
+            40% { color: #66ff66; }
+            60% { color: #ff66cc; }
+            80% { color: #9900ff; }
+            100% { color: #ff4c4c; }
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        input {
+            width: 400px;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #bbb;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            box-shadow: 0 3px 10px rgba(26, 115, 232, 0.5);
+            border-color: #1a73e8;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #ff99cc;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #155cbc;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #recommendations {
+	    display: block;
+            margin-top: 30px;
+            width: 400px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .recommendation-item {
+            padding: 10px;
+            cursor: pointer;
+            color: #1a73e8;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendation-item:hover {
+            background-color: #f4f4f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 600px) {
+            input {
+                width: 90%;
+            }
+
+            #recommendations {
+                width: 90%;
+            }
+        }
+
+        #easterEggButton {
+            position: absolute;
+            right: -120px; /* 将彩蛋按钮定位在搜索按钮右侧 */
+            padding: 10px 20px;
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #easterEggButton:hover {
+            background-color: #cc7a00;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>XXXX</h1>
-            <nav>
+    <audio id="backgroundMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <nav>
+        <ul>
+            <li>
+                源码
                 <ul>
-                    <li><a href="#home">首页</a></li>
-                    <li><a href="#about">关于我们</a></li> <li><a href="#services">服务</a></li>
-                    <li><a href="#contact">联系我们</a></li>
+                    <li><a href="https://github.com/WangEdward1027/SearchEngine/">王绪飞</a></li>
                 </ul>
-            </nav>
-        </header>
-        <section class="hero">
-            <img src="https://via.placeholder.com/500x300" alt="Hero Image">
-            <p>欢迎来到我们的官方网站！</p>
-        </section>
-        <section class="exhibitions">
-            <h2>展览信息</h2>
-            <p>这里是我们即将举行的展览详情。</p>
-        </section>
-        <footer class="footer">
-            <p>版权所有 © 2024 XXXXXXXXX 保留所有权利</p>
-            <p>ICP备案号: 浙ICP备291023号</p>
-        </footer>
+            </li>
+<div id="extraButtons">
+                <a href="http://home.cskaoyan.com/#/home" class="extra-button yellow">去王道学C++</a>
+                <a href="java.html" class="extra-button black">去黑马学Java</a>
+            </div>
+       
+        </ul>
+
+<div style="display: flex; align-items: center; gap: 10px;"> <!-- 添加 gap -->
+    <img src="1.jpg" alt="图片1" class="image-link" onclick="window.location.href='https://www.ecnu.edu.cn/';" />
+    <img src="2.jpg" alt="图片2" class="image-link" onclick="window.location.href='http://www.cs.ecnu.edu.cn/';" />
+    <button id="musicButton" style="position: static;">播放音乐</button> <!-- 确保按钮没有绝对定位 -->
+</div>
+
+
+</nav>
+
+    <h1>指针骑士搜索引擎</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="白度一下，你想知道的我们都没有" />
+        <button id="searchButton">搜索</button>
+        <button id="easterEggButton">图片搜索</button> <!-- 彩蛋按钮 -->
     </div>
+    <div id="recommendations"></div>
+
     <script>
-        // Add button hover effect using jQuery (make sure to include jQuery in your actual project)
-        $(document).ready(function() {
-            $('nav ul li a').hover(function() {
-                $(this).stop().animate({ transform: 'scale(1.1)' }, 200);
-            }, function() {
-                $(this).stop().animate({ transform: 'scale(1)' }, 200);
-            });
+        let debounceTimeout;
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(debounceTimeout);
+            const inputValue = this.value;
+
+            debounceTimeout = setTimeout(() => {
+                if (inputValue) {
+                    fetch(`http://43.143.68.174:8086/advice/${inputValue}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const recommendations = document.getElementById('recommendations');
+                            recommendations.innerHTML = '';
+                            data.forEach(item => {
+                                const div = document.createElement('div');
+                                div.textContent = item;
+                                div.className = 'recommendation-item';
+                                div.addEventListener('click', function() {
+                                    window.location.href = `result.html?query=${encodeURIComponent(item)}`;
+                                });
+                                recommendations.appendChild(div);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching advice:', error));
+                } else {
+                    document.getElementById('recommendations').innerHTML = '';
+                }
+            }, 150);
+        });
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+            }
+        });
+document.getElementById('musicButton').addEventListener('click', function() {
+    const audio = document.getElementById('backgroundMusic');
+    if (audio.paused) {
+        audio.play();
+        this.textContent = '暂停音乐'; // 更新按钮文本
+    } else {
+        audio.pause();
+        this.textContent = '播放音乐'; // 更新按钮文本
+    }
+});
+
+        document.getElementById('easterEggButton').addEventListener('click', function() {
+            window.location.href = 'egg.html';
         });
     </script>
 </body>
